@@ -189,10 +189,10 @@ generateGroupMeta()
       <h2 class="text-lg font-semibold">自訂欄位</h2>
       <div class="flex space-x-2 items-center">
         <input v-model="newField" placeholder="新增欄位名稱" class="border p-1" />
-        <button @click="addField" class="bg-green-600 text-white px-2 py-1 rounded">新增欄位</button>
+        <button @click="addField" class="bg-green-600 text-white px-2 py-1 ml-2 rounded">新增欄位</button>
       </div>
       <div class="flex flex-wrap gap-2 mt-2">
-        <span v-for="field in customFields" :key="field" class="inline-flex items-center bg-gray-200 px-2 py-1 rounded">
+        <span v-for="field in customFields" :key="field" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
           {{ field }}
           <button @click="removeField(field)" class="ml-1 text-red-500">&times;</button>
         </span>
@@ -210,13 +210,22 @@ generateGroupMeta()
     <div>
       <h2 class="text-lg font-semibold">成員設定</h2>
       <table class="w-full border text-sm">
-        <tr v-for="member in members" :key="member.id">
-          <td>{{ member.id }}</td>
-          <td v-for="field in customFields" :key="field">
-            <input v-model="member[field]" :placeholder="field" />
-          </td>
-          <td><input type="checkbox" v-model="member.isLeader" @change="validLeaderNumber"/></td>
-        </tr>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th v-for="(keyName, keyIndex) in customFields" :key="keyIndex">{{ keyName }}</th>
+            <th>隊長</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="member in members" :key="member.id">
+            <td>{{ member.id }}</td>
+            <td v-for="field in customFields" :key="field">
+              <input v-model="member[field]" :placeholder="field" />
+            </td>
+            <td><input type="checkbox" v-model="member.isLeader" @change="validLeaderNumber"/></td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
