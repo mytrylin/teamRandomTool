@@ -17,24 +17,15 @@ interface Group {
 const totalMembers = ref(4)
 const members = ref<Member[]>([])
 
-const groupCount = ref(2)
-const groupNames = ref<string[]>([])
-const groupColors = ref<string[]>([])
-const groups = ref<Group[]>([])
-
-const maxLeaders = computed(() => groupCount.value)
-const leaderCount = computed(() => members.value.filter(m => m.isLeader).length)
-
-// 欄位設定區塊
 const MAX_FIELDS = 11
-const customFields = ref<string[]>(['name', 'job']) // 預設欄位
-const newField = ref('') // 用來新增欄位
+const customFields = ref<string[]>(['name', 'job'])
+const newField = ref('')
 
 const addField = () => {
   const field = newField.value.trim()
   if (!field) return
   if (customFields.value.length >= MAX_FIELDS) {
-    alert('欄位數量已達上限（11個）')
+    alert(`欄位數量已達上限（${MAX_FIELDS}個）`)
     return
   }
   if (!customFields.value.includes(field)) {
@@ -65,11 +56,31 @@ const generateMembers = () => {
   })
 }
 
+const groupCount = ref(2)
+const groupNames = ref<string[]>([])
+const groupColors = ref<string[]>([])
+const groups = ref<Group[]>([])
+
+const leaderCount = computed(() => members.value.filter(m => m.isLeader).length)
+
 const toggleLeader = (id: number) => {
   const member = members.value.find(m => m.id === id)
-  if (member) {
-    if (!member.isLeader && leaderCount.value >= maxLeaders.value) return
-    member.isLeader = !member.isLeader
+  if (!member) return
+
+  const currentlySelected = member.isLeader
+  const totalLeaders = leaderCount.value
+
+  if (!currentlySelected && totalLeaders >= groupCount.value) {
+    alert('隊長人數不得超過分組數')
+    return
+  }
+
+  member.isLeader = !member.isLeader
+
+  // 若有勾選任何一名隊長，則必須勾滿對應組數
+  const selected = members.value.filter(m => m.isLeader)
+  if (selected.length > 0 && selected.length !== groupCount.value) {
+    alert(`請指定 ${groupCount.value} 位隊長（目前為 ${selected.length} 位）`)
   }
 }
 
@@ -89,28 +100,69 @@ const shuffle = <T>(array: T[]): T[] => {
   return copy
 }
 
-const assignGroups = () => {
-  if (leaderCount.value > groupCount.value) {
-    alert('隊長人數不得超過分組數')
-    return
+const validateLeaderAssignment = (groups: Group[]): boolean => {
+  let allHaveOneLeader = true
+  for (const group of groups) {
+    const leaders = group.members.filter(m => m.isLeader)
+    if (leaders.length > 1 || (leaderCount.value > 0 && leaders.length === 0)) {
+      allHaveOneLeader = false
+      break
+    }
   }
-  const leaders = members.value.filter(m => m.isLeader)
-  const others = shuffle(members.value.filter(m => !m.isLeader))
-  const all = shuffle([...leaders, ...others])
+  return allHaveOneLeader
+}
 
-  const tempGroups: Group[] = Array.from({ length: groupCount.value }, (_, i) => ({
-    id: i,
-    name: groupNames.value[i] || `組別 ${i + 1}`,
-    color: groupColors.value[i] || '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
-    members: []
-  }))
+// 驗證隊長數量
+const validLeaderNumber = () => {
+  const usingLeader = leaderCount.value > 0
+  if (usingLeader && leaderCount.value !== groupCount.value) {
+    if (leaderCount.value > groupCount.value ) {
+      alert(`目前已勾選 ${leaderCount.value} 位隊長，已超過最分組上限，請移除 ${leaderCount.value - groupCount.value} 位隊長後再進行分組`)
+    } else {
+      alert(`目前已勾選 ${leaderCount.value} 位隊長，請指定 ${groupCount.value} 位隊長後再進行分組`)
+    }
+    return false
+  } else {
+    return usingLeader
+  }
+}
 
-  all.forEach((member, index) => {
-    const groupIndex = index % groupCount.value
-    tempGroups[groupIndex].members.push(member)
-  })
+const assignGroups = () => {
+  // 不使用隊長功能時跳過驗證
+  const usingLeader = validLeaderNumber()
+  if (!usingLeader) return
 
-  groups.value = tempGroups
+  let success = false
+  let attempts = 0
+
+  while (!success && attempts < 1000) {
+    attempts++
+
+    const leaders = members.value.filter(m => m.isLeader)
+    const others = shuffle(members.value.filter(m => !m.isLeader))
+    const all = shuffle([...leaders, ...others])
+
+    const tempGroups: Group[] = Array.from({ length: groupCount.value }, (_, i) => ({
+      id: i,
+      name: groupNames.value[i] || `組別 ${i + 1}`,
+      color: groupColors.value[i] || '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
+      members: []
+    }))
+
+    all.forEach((member, index) => {
+      const groupIndex = index % groupCount.value
+      tempGroups[groupIndex].members.push({ ...member })
+    })
+
+    if (!usingLeader || validateLeaderAssignment(tempGroups)) {
+      groups.value = tempGroups
+      success = true
+    }
+  }
+
+  if (!success) {
+    alert('無法在 1000 次內完成有效分組，請確認隊長設定是否合理')
+  }
 }
 
 // 初始化
@@ -137,7 +189,7 @@ generateGroupMeta()
       <h2 class="text-lg font-semibold">自訂欄位</h2>
       <div class="flex space-x-2 items-center">
         <input v-model="newField" placeholder="新增欄位名稱" class="border p-1" />
-        <button @click="addField" class="ml-2 bg-green-600 text-white px-2 py-1 rounded">新增資料欄位</button>
+        <button @click="addField" class="bg-green-600 text-white px-2 py-1 rounded">新增欄位</button>
       </div>
       <div class="flex flex-wrap gap-2 mt-2">
         <span v-for="field in customFields" :key="field" class="inline-flex items-center bg-gray-200 px-2 py-1 rounded">
@@ -163,7 +215,7 @@ generateGroupMeta()
           <td v-for="field in customFields" :key="field">
             <input v-model="member[field]" :placeholder="field" />
           </td>
-          <td><input type="checkbox" v-model="member.isLeader" /></td>
+          <td><input type="checkbox" v-model="member.isLeader" @change="validLeaderNumber"/></td>
         </tr>
       </table>
     </div>
