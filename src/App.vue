@@ -177,7 +177,9 @@ generateGroupMeta()
     <div class="grid gap-4 md:grid-cols-2">
       <div>
         <label class="font-semibold">總人數：</label>
-        <input v-model.number="totalMembers" type="number" min="1" class="border p-1 w-24" @change="generateMembers" />
+        <input v-model.number="totalMembers" type="number" min="1" class="border p-1 w-24" @change="generateMembers" 
+          placeholder="請輸入總人數"
+        />
       </div>
       <div>
         <label class="font-semibold">分組數：</label>
@@ -191,9 +193,11 @@ generateGroupMeta()
         <input v-model="newField" placeholder="新增欄位名稱" class="border p-1" />
         <button @click="addField" class="bg-green-600 text-white px-2 py-1 ml-2 rounded">新增欄位</button>
       </div>
+      
       <div class="flex flex-wrap gap-2 mt-2">
+        <div class="tag-title">欄位標頭</div>
         <span v-for="field in customFields" :key="field" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
-          {{ field }}
+          <span class="tag">{{ field }}</span>
           <button @click="removeField(field)" class="ml-1 text-red-500">&times;</button>
         </span>
       </div>
@@ -201,7 +205,7 @@ generateGroupMeta()
 
     <div class="space-y-2">
       <h2 class="text-lg font-semibold">分組名稱與顏色</h2>
-      <div v-for="(name, index) in groupNames" :key="index" class="flex items-center space-x-2">
+      <div v-for="(name, index) in groupNames" :key="index" class="flex items-center space-x-2 mb-1">
         <input v-model="groupNames[index]" placeholder="分組名稱" class="border p-1 w-40" />
         <input v-model="groupColors[index]" type="color" class="w-10 h-10" />
       </div>
@@ -282,16 +286,20 @@ label {
 input[type="text"],
 input[type="number"],
 input[type="color"] {
-  padding: 6px 10px;
+  padding: 4px 8px;
   font-size: 14px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  width: 100%;
+  /* width: 100%; */
   box-sizing: border-box;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
 input[type="number"] {
   max-width: 100px;
+  border: 1px solid #d5d5d5;
+  margin-bottom: 5px;
 }
 
 input[type="checkbox"] {
@@ -378,6 +386,30 @@ tr:hover {
 }
 .ml-2 {
   margin-left: 10px;
+}
+.mb-1 {
+  margin-bottom: 5px;
+}
+.mb-2 {
+  margin-bottom: 10px;
+}
+.mb-3 {
+  margin-bottom: 25px;
+}
+.mt-2 {
+  margin-top: 10px;
+}
+
+.tag-title {
+  margin-bottom: 0;
+  font-weight: 700;
+}
+.tag {
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  padding: 1px 3px 3px 3px;
+  color: #0963c3;
+  font-size: 18px;
 }
 
 /* -------- RWD 響應式樣式 -------- */
