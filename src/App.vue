@@ -262,7 +262,7 @@ members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "�
             {{ member[customFields[0].keyName] || '未命名' }} 
             <template v-if="customFields.length > 1">
               (<span v-for="(item, index) in customFields">
-                {{ item.keyName }}
+                {{ member[item.keyName] }}
                 <template v-if="index !== customFields.length - 1">、</template>
               </span>)
             </template>
