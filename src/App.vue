@@ -230,7 +230,7 @@ generateGroupMeta()
             </td>
             <td>
               <span class="m-show">隊長(選填)</span>
-              <input type="checkbox" v-model="member.isLeader" @change="validLeaderNumber"/>
+              <input type="checkbox" v-model="member.isLeader" />
             </td>
           </tr>
         </tbody>
