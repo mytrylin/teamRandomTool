@@ -197,8 +197,8 @@ generateGroupMeta()
       
       <div class="flex flex-wrap gap-2 mt-2">
         <div class="tag-title">欄位標頭</div>
-        <span v-for="field in customFields" :key="field" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
-          <span class="tag">{{ field }}</span>
+        <span v-for="(field, index) in customFields" :key="field" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
+          <input class="tag" v-model="customFields[index]" />
           <button @click="removeField(field)" class="ml-1 text-red-500">&times;</button>
         </span>
       </div>
@@ -228,7 +228,10 @@ generateGroupMeta()
             <td v-for="field in customFields" :key="field">
               <input v-model="member[field]" :placeholder="field" />
             </td>
-            <td><input type="checkbox" v-model="member.isLeader" @change="validLeaderNumber"/></td>
+            <td>
+              <span class="m-show">隊長(選填)</span>
+              <input type="checkbox" v-model="member.isLeader" @change="validLeaderNumber"/>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -412,6 +415,9 @@ tr:hover {
   color: #0963c3;
   font-size: 18px;
 }
+.m-show {
+  display: none;
+}
 
 /* -------- RWD 響應式樣式 -------- */
 
@@ -450,7 +456,8 @@ tr:hover {
 
   table td {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    justify-content: end;
     padding: 6px 8px;
     border: none;
     border-bottom: 1px solid #eee;
@@ -465,6 +472,9 @@ tr:hover {
     font-weight: bold;
     margin-right: 8px;
     color: #555;
+  }
+  .m-show {
+    display: block;
   }
 }
 
