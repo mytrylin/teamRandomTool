@@ -115,6 +115,7 @@ const validateLeaderAssignment = (groups: Group[]): boolean => {
 // 驗證隊長數量
 const validLeaderNumber = () => {
   const usingLeader = leaderCount.value > 0
+  if (leaderCount.value === 0) return true
   if (usingLeader && leaderCount.value !== groupCount.value) {
     if (leaderCount.value > groupCount.value ) {
       alert(`目前已勾選 ${leaderCount.value} 位隊長，已超過最分組上限，請移除 ${leaderCount.value - groupCount.value} 位隊長後再進行分組`)
