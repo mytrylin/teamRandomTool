@@ -171,6 +171,13 @@ const assignGroups = () => {
   }
 }
 
+const clean = () => {
+  members.value = [{  "id": 1, "isLeader": false }]
+  customFields.value.forEach((item, index) => {
+    members.value[0][item] = ""
+  })
+}
+
 generateMembers()
 generateGroupMeta()
 members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, { "id": 4, "isLeader": false, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, { "id": 6, "isLeader": false, "俠名": "念心", "性別": "女", "門派": "天香谷" }, { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, { "id": 8, "isLeader": false, "俠名": "唐夢", "性別": "女", "門派": "唐門" } ]
@@ -247,6 +254,7 @@ members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "�
       <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" @click="assignGroups">
         開始亂數分組
       </button>
+      <button class="ml-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" @click="clean">消除成員資料</button>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
