@@ -128,6 +128,8 @@ const validLeaderNumber = () => {
   }
 }
 
+const tempGroups = ref<Group[]>()
+
 const assignGroups = () => {
   // 不使用隊長功能時跳過驗證
   const usingLeader = validLeaderNumber()
@@ -143,7 +145,7 @@ const assignGroups = () => {
     const others = shuffle(members.value.filter(m => !m.isLeader))
     const all = shuffle([...leaders, ...others])
 
-    const tempGroups: Group[] = Array.from({ length: groupCount.value }, (_, i) => ({
+    tempGroups.value = Array.from({ length: groupCount.value }, (_, i) => ({
       id: i,
       name: groupNames.value[i] || `組別 ${i + 1}`,
       color: groupColors.value[i] || '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
@@ -152,11 +154,13 @@ const assignGroups = () => {
 
     all.forEach((member, index) => {
       const groupIndex = index % groupCount.value
-      tempGroups[groupIndex].members.push({ ...member })
+      // 不把 member 複製成新物件，直接整個物件 push 過去
+      // tempGroups.value[groupIndex].members.push({ ...member })
+      tempGroups.value[groupIndex].members.push(member)
     })
 
-    if (!usingLeader || validateLeaderAssignment(tempGroups)) {
-      groups.value = tempGroups
+    if (!usingLeader || validateLeaderAssignment(tempGroups.value)) {
+      groups.value = tempGroups.value
       success = true
     }
   }
@@ -169,6 +173,7 @@ const assignGroups = () => {
 // 初始化
 generateMembers()
 generateGroupMeta()
+
 </script>
 
 <template>
