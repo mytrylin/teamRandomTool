@@ -14,7 +14,7 @@ interface Group {
   members: Member[]
 }
 
-const totalMembers = ref(4)
+const totalMembers = ref(8)
 const members = ref<Member[]>([])
 
 const MAX_FIELDS = 11
