@@ -173,7 +173,7 @@ const assignGroups = () => {
 
 generateMembers()
 generateGroupMeta()
-members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, { "id": 4, "isLeader": false, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, { "id": 6, "isLeader": false, "俠名": "念心", "性別": "女", "門派": "天香谷" }, { "id": 7, "isLeader": false, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, { "id": 8, "isLeader": true, "俠名": "唐夢", "性別": "女", "門派": "唐門" } ]
+members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, { "id": 4, "isLeader": false, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, { "id": 6, "isLeader": false, "俠名": "念心", "性別": "女", "門派": "天香谷" }, { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, { "id": 8, "isLeader": false, "俠名": "唐夢", "性別": "女", "門派": "唐門" } ]
 
 </script>
 
@@ -424,7 +424,7 @@ tr:hover {
 .tag {
   border: 1px solid #007bff;
   border-radius: 4px;
-  padding: 1px 3px 3px 3px;
+  padding: 3px;
   color: #0963c3;
   font-size: 18px;
 }
