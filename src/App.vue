@@ -18,7 +18,11 @@ const totalMembers = ref(4)
 const members = ref<Member[]>([])
 
 const MAX_FIELDS = 11
-const customFields = ref<string[]>(['name', 'job'])
+const customFields = ref<{ keyIndex: number, keyName: string }[]>([
+  { keyIndex: 0, keyName: '俠名' },
+  { keyIndex: 1, keyName: '性別' },
+  { keyIndex: 2, keyName: '門派' },
+])
 const newField = ref('')
 
 const addField = () => {
@@ -28,8 +32,10 @@ const addField = () => {
     alert(`欄位數量已達上限（${MAX_FIELDS}個）`)
     return
   }
-  if (!customFields.value.includes(field)) {
-    customFields.value.push(field)
+  const alreadyExists = customFields.value.some(f => f.keyName === field)
+  if (!alreadyExists) {
+    const newIndex = customFields.value.length
+    customFields.value.push({ keyIndex: newIndex, keyName: field })
     members.value.forEach(m => {
       m[field] = ''
     })
@@ -37,11 +43,11 @@ const addField = () => {
   newField.value = ''
 }
 
-const removeField = (field: string) => {
-  if (['id', 'isLeader'].includes(field)) return
-  customFields.value = customFields.value.filter(f => f !== field)
+const removeField = (fieldName: string) => {
+  if (['id', 'isLeader'].includes(fieldName)) return
+  customFields.value = customFields.value.filter(f => f.keyName !== fieldName)
   members.value.forEach(m => {
-    delete m[field]
+    delete m[fieldName]
   })
 }
 
@@ -51,7 +57,7 @@ const generateMembers = () => {
       id: i + 1,
       isLeader: false
     }
-    customFields.value.forEach(f => member[f] = '')
+    customFields.value.forEach(f => member[f.keyName] = '')
     return member
   })
 }
@@ -77,7 +83,6 @@ const toggleLeader = (id: number) => {
 
   member.isLeader = !member.isLeader
 
-  // 若有勾選任何一名隊長，則必須勾滿對應組數
   const selected = members.value.filter(m => m.isLeader)
   if (selected.length > 0 && selected.length !== groupCount.value) {
     alert(`請指定 ${groupCount.value} 位隊長（目前為 ${selected.length} 位）`)
@@ -112,7 +117,6 @@ const validateLeaderAssignment = (groups: Group[]): boolean => {
   return allHaveOneLeader
 }
 
-// 驗證隊長數量
 const validLeaderNumber = () => {
   const usingLeader = leaderCount.value > 0
   if (leaderCount.value === 0) return true
@@ -131,7 +135,6 @@ const validLeaderNumber = () => {
 const tempGroups = ref<Group[]>()
 
 const assignGroups = () => {
-  // 不使用隊長功能時跳過驗證
   const usingLeader = validLeaderNumber()
   if (!usingLeader) return
 
@@ -154,8 +157,6 @@ const assignGroups = () => {
 
     all.forEach((member, index) => {
       const groupIndex = index % groupCount.value
-      // 不把 member 複製成新物件，直接整個物件 push 過去
-      // tempGroups.value[groupIndex].members.push({ ...member })
       tempGroups.value[groupIndex].members.push(member)
     })
 
@@ -170,9 +171,9 @@ const assignGroups = () => {
   }
 }
 
-// 初始化
 generateMembers()
 generateGroupMeta()
+members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, { "id": 4, "isLeader": false, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, { "id": 6, "isLeader": false, "俠名": "念心", "性別": "女", "門派": "天香谷" }, { "id": 7, "isLeader": false, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, { "id": 8, "isLeader": true, "俠名": "唐夢", "性別": "女", "門派": "唐門" } ]
 
 </script>
 
@@ -202,8 +203,8 @@ generateGroupMeta()
       
       <div class="flex flex-wrap gap-2 mt-2">
         <div class="tag-title">欄位標頭</div>
-        <span v-for="(field, index) in customFields" :key="field" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
-          <input class="tag" v-model="customFields[index]" />
+        <span v-for="(field, index) in customFields" :key="index" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
+          <input class="tag" v-model="customFields[index].keyName" />
           <button @click="removeField(field)" class="ml-1 text-red-500">&times;</button>
         </span>
       </div>
@@ -223,15 +224,15 @@ generateGroupMeta()
         <thead>
           <tr>
             <th>ID</th>
-            <th v-for="(keyName, keyIndex) in customFields" :key="keyIndex">{{ keyName }}</th>
+            <th v-for="(item, index) in customFields" :key="index">{{ item.keyName }}</th>
             <th>隊長</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="member in members" :key="member.id">
             <td>{{ member.id }}</td>
-            <td v-for="field in customFields" :key="field">
-              <input v-model="member[field]" :placeholder="field" />
+            <td v-for="(item, index) in customFields" :key="index">
+              <input v-model="member[item.keyName]" :placeholder="item.keyName" />
             </td>
             <td>
               <span class="m-show">隊長(選填)</span>
@@ -258,7 +259,14 @@ generateGroupMeta()
         <h3 class="text-lg font-bold mb-2" :style="{ color: group.color }">{{ group.name }}</h3>
         <ul class="list-disc ml-4 text-sm">
           <li v-for="member in group.members" :key="member.id">
-            {{ member.name || '未命名' }} <span v-if="member.isLeader">（隊長）</span>
+            {{ member[customFields[0].keyName] || '未命名' }} 
+            <template v-if="customFields.length > 1">
+              (<span v-for="(item, index) in customFields">
+                {{ item.keyName }}
+                <template v-if="index !== customFields.length - 1">、</template>
+              </span>)
+            </template>
+            <span v-if="member.isLeader">（隊長）</span>
           </li>
         </ul>
       </div>
