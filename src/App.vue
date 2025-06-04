@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 interface Member {
   id: number
@@ -51,18 +51,44 @@ const removeField = (fieldName: string) => {
   })
 }
 
-const generateMembers = () => {
-  members.value = Array.from({ length: totalMembers.value }, (_, i) => {
-    const member: Member = {
-      id: i + 1,
-      isLeader: false
-    }
-    customFields.value.forEach(f => member[f.keyName] = '')
-    return member
-  })
+const removeMember = (id: number) => {
+  members.value = members.value.filter(item => item.id !== id)
+
+  // 正確更新每個 group 的 members 陣列
+  groups.value = groups.value.map(group => ({
+    ...group,
+    members: group.members.filter(item => item.id !== id)
+  }))
 }
 
-const groupCount = ref(2)
+const removeGroup = (groupIndex: string) => {
+  groupNames.value = groupNames.value.filter((item, index) => index !== groupIndex)
+}
+
+const generateMembers = () => {
+  const current = members.value
+  const diff = totalMembers.value - current.length
+
+  if (diff > 0) {
+    // 增加人數
+    for (let i = 0; i < diff; i++) {
+      const id = current.length + i + 1
+      const newMember: Member = {
+        id,
+        isLeader: false,
+      }
+      customFields.value.forEach(f => {
+        newMember[f.keyName] = ''
+      })
+      current.push(newMember)
+    }
+  } else if (diff < 0) {
+    // 減少人數：砍掉多餘
+    members.value = current.slice(0, totalMembers.value)
+  }
+}
+
+const groupCount = ref(3)
 const groupNames = ref<string[]>([])
 const groupColors = ref<string[]>([])
 const groups = ref<Group[]>([])
@@ -180,7 +206,21 @@ const clean = () => {
 
 generateMembers()
 generateGroupMeta()
-members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, { "id": 4, "isLeader": false, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, { "id": 6, "isLeader": false, "俠名": "念心", "性別": "女", "門派": "天香谷" }, { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, { "id": 8, "isLeader": false, "俠名": "唐夢", "性別": "女", "門派": "唐門" } ]
+
+watch(members, val => totalMembers.value = val.length)
+watch(groupNames, val => groupCount.value = val.length)
+
+members.value = [ 
+  { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, 
+  { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, 
+  { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, 
+  { "id": 4, "isLeader": true, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, 
+  { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, 
+  { "id": 6, "isLeader": false, "俠名": "藏夢", "性別": "女", "門派": "天香谷" }, 
+  { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, 
+  { "id": 8, "isLeader": false, "俠名": "唐念", "性別": "女", "門派": "唐門" }, 
+  { "id": 9, "isLeader": false, "俠名": "嗜心", "性別": "女", "門派": "玄武門" }, 
+]
 
 </script>
 
@@ -212,16 +252,17 @@ members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "�
         <div class="tag-title">欄位標頭</div>
         <span v-for="(field, index) in customFields" :key="index" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
           <input class="tag" v-model="customFields[index].keyName" />
-          <button @click="removeField(field)" class="ml-1 text-red-500">&times;</button>
+          <button @click="removeField(field.keyName)" class="ml-1 text-red-500">&times;</button>
         </span>
       </div>
     </div>
 
     <div class="space-y-2">
-      <h2 class="text-lg font-semibold">分組名稱與顏色</h2>
+      <h2 class="text-lg font-semibold">分組名稱</h2>
       <div v-for="(name, index) in groupNames" :key="index" class="flex items-center space-x-2 mb-1">
         <input v-model="groupNames[index]" placeholder="分組名稱" class="border p-1 w-40" />
         <input v-model="groupColors[index]" type="color" class="w-10 h-10" />
+        <button @click="removeGroup(index)" class="ml-1 text-red-500">&times;</button>
       </div>
     </div>
 
@@ -233,17 +274,22 @@ members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "�
             <th>ID</th>
             <th v-for="(item, index) in customFields" :key="index">{{ item.keyName }}</th>
             <th>隊長</th>
+            <th>刪除</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="member in members" :key="member.id">
             <td>{{ member.id }}</td>
             <td v-for="(item, index) in customFields" :key="index">
-              <input v-model="member[item.keyName]" :placeholder="item.keyName" />
+              <input class="memberInput"
+               v-model="member[item.keyName]" :placeholder="item.keyName" />
             </td>
             <td>
               <span class="m-show">隊長(選填)</span>
               <input type="checkbox" v-model="member.isLeader" />
+            </td>
+            <td>
+              <button class="ml-1 text-red-500" @click="removeMember(member.id)">&times;</button>
             </td>
           </tr>
         </tbody>
@@ -260,13 +306,13 @@ members.value = [ { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "�
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
       <div
         v-for="group in groups"
-        :key="group.id"
+        :key="group?.id || 0"
         class="p-4 border rounded shadow"
-        :style="{ backgroundColor: group.color + '33' }"
+        :style="{ backgroundColor: group?.color + '33' }"
       >
-        <h3 class="text-lg font-bold mb-2" :style="{ color: group.color }">{{ group.name }}</h3>
-        <ul class="list-disc ml-4 text-sm">
-          <li v-for="member in group.members" :key="member.id">
+        <h3 class="text-lg font-bold mb-2" :style="{ color: group?.color }">{{ group?.name }}</h3>
+        <ul class="list-disc ml-4 text-m">
+          <li v-for="member in group?.members" :key="member.id">
             {{ member[customFields[0].keyName] || '未命名' }} 
             <template v-if="customFields.length > 1">
               (<span v-for="(item, index) in customFields.slice(1)">
@@ -424,6 +470,9 @@ tr:hover {
 .mt-2 {
   margin-top: 10px;
 }
+.text-m {
+  font-size: 16px;
+}
 
 .tag-title {
   margin-bottom: 0;
@@ -435,6 +484,13 @@ tr:hover {
   padding: 3px;
   color: #0963c3;
   font-size: 18px;
+}
+.memberInput {
+  border: 1px solid #7e7e7e;
+  border-radius: 4px;
+  padding: 3px;
+  color: #131313;
+  font-size: 16px;
 }
 .m-show {
   display: none;
