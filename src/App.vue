@@ -275,14 +275,14 @@ watch(groupNames, val => groupCount.value = val.length)
       <h2 class="h2-panel">自訂欄位</h2>
       <div class="flex space-x-2 items-center">
         <input v-model="newField" placeholder="新增欄位名稱" class="generalInput" />
-        <button @click="addField" class="bg-green-600 text-white px-2 py-1 ml-2 rounded">新增欄位</button>
+        <button @click="addField" class="ml-2">新增欄位</button>
       </div>
       
       <div class="flex flex-wrap gap-2 mt-2">
         <div class="tag-title">欄位標頭</div>
         <span v-for="(field, index) in customFields" :key="index" class="inline-flex items-center bg-gray-200 px-2 py-1 rounded">
           <input class="tag" v-model="customFields[index].keyName" />
-          <button @click="removeField(field.keyName)" class="ml-1 text-red-500">&times;</button>
+          <button @click="removeField(field.keyName)" class="ml-1 mr-1 text-red-500">&times;</button>
         </span>
       </div>
     </div>
@@ -515,6 +515,12 @@ tr:hover {
 }
 .mt-2 {
   margin-top: 10px;
+}
+.mr-1 {
+  margin-right: 5px;
+}
+.mr-2 {
+  margin-right: 10px;
 }
 
 .current-pointer {
