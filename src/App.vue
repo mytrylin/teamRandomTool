@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 
 interface Member {
   id: number
@@ -221,32 +221,81 @@ const assignGroups = () => {
   }
 }
 
+const queryTest = ref<string>('')
+const getQuery = () => {
+  const UrlSearch = location.search
+  queryTest.value = UrlSearch.split('=')[1]
+}
+
 const addTestData = () => {
-  customFields.value = [
-    { keyIndex: 0, keyName: '俠名' },
-    { keyIndex: 1, keyName: '性別' },
-    { keyIndex: 2, keyName: '門派' },
-  ]
+  switch (queryTest.value) {
+    case '1':
+      customFields.value = [
+        { keyIndex: 0, keyName: '姓名' }
+      ]
 
-  groupNames.value = ['先鋒組', '側翼組', '斬首組']
+      groupNames.value = ['1車', '2車', '3車', '4車', '5車', '6車']
 
-  members.value = [ 
-    { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, 
-    { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, 
-    { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, 
-    { "id": 4, "isLeader": true, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, 
-    { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, 
-    { "id": 6, "isLeader": false, "俠名": "藏夢", "性別": "女", "門派": "天香谷" }, 
-    { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, 
-    { "id": 8, "isLeader": false, "俠名": "唐念", "性別": "女", "門派": "唐門" }, 
-    { "id": 9, "isLeader": false, "俠名": "嗜心", "性別": "女", "門派": "玄武門" }, 
-    { "id": 10, "isLeader": false, "俠名": "逆怨", "性別": "女", "門派": "萬血窟" },
-    { "id": 11, "isLeader": false, "俠名": "雪飲 輕衣", "性別": "女", "門派": "雪衣樓" },
-  ]
+      members.value = [ 
+        { "id": 1, "isLeader": true, "姓名": "岳" }, 
+        { "id": 1, "isLeader": false, "姓名": "鐙" }, 
+        { "id": 1, "isLeader": false, "姓名": "潔" }, 
+        { "id": 1, "isLeader": false, "姓名": "甄" }, 
+
+        { "id": 1, "isLeader": false, "姓名": "念" }, 
+        { "id": 1, "isLeader": false, "姓名": "家" }, 
+        { "id": 1, "isLeader": false, "姓名": "惠" }, 
+        { "id": 1, "isLeader": false, "姓名": "婷" }, 
+
+        { "id": 1, "isLeader": false, "姓名": "昆" }, 
+        { "id": 1, "isLeader": false, "姓名": "游" }, 
+        { "id": 1, "isLeader": false, "姓名": "七" }, 
+        { "id": 1, "isLeader": false, "姓名": "掃" }, 
+
+        { "id": 1, "isLeader": true, "姓名": "鏢1" },
+        { "id": 1, "isLeader": true, "姓名": "鏢2" },
+        { "id": 1, "isLeader": true, "姓名": "鏢3" },
+        { "id": 1, "isLeader": true, "姓名": "鏢4" },
+        { "id": 1, "isLeader": true, "姓名": "鏢5" },
+
+        { "id": 1, "isLeader": false, "姓名": "褓" },
+        { "id": 1, "isLeader": false, "姓名": "助" },
+      ]
+      break;
+  
+    default:
+      customFields.value = [
+        { keyIndex: 0, keyName: '俠名' },
+        { keyIndex: 1, keyName: '性別' },
+        { keyIndex: 2, keyName: '門派' },
+      ]
+
+      groupNames.value = ['先鋒組', '側翼組', '斬首組']
+
+      members.value = [ 
+        { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, 
+        { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, 
+        { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, 
+        { "id": 4, "isLeader": true, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, 
+        { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, 
+        { "id": 6, "isLeader": false, "俠名": "藏夢", "性別": "女", "門派": "天香谷" }, 
+        { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, 
+        { "id": 8, "isLeader": false, "俠名": "唐念", "性別": "女", "門派": "唐門" }, 
+        { "id": 9, "isLeader": false, "俠名": "嗜心", "性別": "女", "門派": "玄武門" }, 
+        { "id": 10, "isLeader": false, "俠名": "逆怨", "性別": "女", "門派": "萬血窟" },
+        { "id": 11, "isLeader": false, "俠名": "雪飲 輕衣", "性別": "女", "門派": "雪衣樓" },
+      ]
+      break;
+  }
+
 }
 
 generateMembers()
 initDefaultGroup()
+
+onMounted(() => {
+  getQuery()
+})
 
 watch(members, val => totalMembers.value = val.length)
 watch(groupNames, val => groupCount.value = val.length)
