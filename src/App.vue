@@ -19,9 +19,7 @@ const members = ref<Member[]>([])
 
 const MAX_FIELDS = 11
 const customFields = ref<{ keyIndex: number, keyName: string }[]>([
-  { keyIndex: 0, keyName: '俠名' },
-  { keyIndex: 1, keyName: '性別' },
-  { keyIndex: 2, keyName: '門派' },
+  { keyIndex: 0, keyName: 'name' },
 ])
 const newField = ref('')
 
@@ -88,7 +86,7 @@ const generateMembers = () => {
   }
 }
 
-const groupCount = ref(3)
+const groupCount = ref(2)
 const groupNames = ref<string[]>([])
 const groupColors = ref<string[]>([])
 const groups = ref<Group[]>([])
@@ -115,11 +113,37 @@ const toggleLeader = (id: number) => {
   }
 }
 
-const generateGroupMeta = () => {
+const initDefaultGroup = () => {
   groupNames.value = Array.from({ length: groupCount.value }, (_, i) => `組別 ${i + 1}`)
-  groupColors.value = Array.from({ length: groupCount.value }, () =>
-    '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '137')
-  )
+  groupColors.value = Array.from({ length: groupCount.value }, () => randomGroupColor())
+}
+
+
+const randomGroupColor = () => {
+  return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '137')
+}
+
+const addMember = () => {
+  totalMembers.value += 1
+  generateMembers()
+}
+
+const addGroup = () => {
+  groupCount.value += 1
+  groupNames.value.push(`組別 ${groupNames.value.length + 1}`)
+  groupColors.value.push(randomGroupColor())
+  console.log('groupColors', groupColors.value)
+}
+
+const clean = () => {
+  if (!confirm("確定全部刪除")) {
+    return;
+  }
+  members.value = []
+  // members.value = [{ "id": 1, "isLeader": false }]
+  // customFields.value.forEach((item, index) => {
+  //   members.value[0][item] = ""
+  // })
 }
 
 const shuffle = <T>(array: T[]): T[] => {
@@ -197,32 +221,35 @@ const assignGroups = () => {
   }
 }
 
-const clean = () => {
-  members.value = [{  "id": 1, "isLeader": false }]
-  customFields.value.forEach((item, index) => {
-    members.value[0][item] = ""
-  })
+const addTestData = () => {
+  customFields.value = [
+    { keyIndex: 0, keyName: '俠名' },
+    { keyIndex: 1, keyName: '性別' },
+    { keyIndex: 2, keyName: '門派' },
+  ]
+
+  groupNames.value = ['先鋒組', '側翼組', '斬首組']
+
+  members.value = [ 
+    { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, 
+    { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, 
+    { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, 
+    { "id": 4, "isLeader": true, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, 
+    { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, 
+    { "id": 6, "isLeader": false, "俠名": "藏夢", "性別": "女", "門派": "天香谷" }, 
+    { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, 
+    { "id": 8, "isLeader": false, "俠名": "唐念", "性別": "女", "門派": "唐門" }, 
+    { "id": 9, "isLeader": false, "俠名": "嗜心", "性別": "女", "門派": "玄武門" }, 
+    { "id": 10, "isLeader": false, "俠名": "逆怨", "性別": "女", "門派": "萬血窟" },
+    { "id": 11, "isLeader": false, "俠名": "雪飲 輕衣", "性別": "女", "門派": "雪衣樓" },
+  ]
 }
 
 generateMembers()
-generateGroupMeta()
+initDefaultGroup()
 
 watch(members, val => totalMembers.value = val.length)
 watch(groupNames, val => groupCount.value = val.length)
-
-members.value = [ 
-  { "id": 1, "isLeader": true, "俠名": "笑天", "性別": "男", "門派": "神刀門" }, 
-  { "id": 2, "isLeader": false, "俠名": "森冷", "性別": "男", "門派": "五毒教" }, 
-  { "id": 3, "isLeader": false, "俠名": "夜柳", "性別": "男", "門派": "移花宮" }, 
-  { "id": 4, "isLeader": true, "俠名": "借命", "性別": "男", "門派": "血衣樓" }, 
-  { "id": 5, "isLeader": false, "俠名": "破酒", "性別": "男", "門派": "丐幫" }, 
-  { "id": 6, "isLeader": false, "俠名": "藏夢", "性別": "女", "門派": "天香谷" }, 
-  { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, 
-  { "id": 8, "isLeader": false, "俠名": "唐念", "性別": "女", "門派": "唐門" }, 
-  { "id": 9, "isLeader": false, "俠名": "嗜心", "性別": "女", "門派": "玄武門" }, 
-  { "id": 10, "isLeader": false, "俠名": "逆怨", "性別": "女", "門派": "萬血窟" },
-  { "id": 11, "isLeader": false, "俠名": "雪飲 輕衣", "性別": "女", "門派": "雪衣樓" },
-]
 
 </script>
 
@@ -239,20 +266,21 @@ members.value = [
       </div>
       <div>
         <label class="font-semibold">分組數：</label>
-        <input v-model.number="groupCount" type="number" min="1" class="border p-1 w-24" @change="generateGroupMeta" />
+        <input v-model.number="groupCount" type="number" min="1" class="border p-1 w-24" @change="initDefaultGroup" />
       </div>
+      <button class="ml-1" @click="addTestData">加入測試假資料</button>
     </div>
 
     <div class="space-y-2">
-      <h2 class="text-lg font-semibold">自訂欄位</h2>
+      <h2 class="h2-panel">自訂欄位</h2>
       <div class="flex space-x-2 items-center">
-        <input v-model="newField" placeholder="新增欄位名稱" class="border p-1" />
+        <input v-model="newField" placeholder="新增欄位名稱" class="generalInput" />
         <button @click="addField" class="bg-green-600 text-white px-2 py-1 ml-2 rounded">新增欄位</button>
       </div>
       
       <div class="flex flex-wrap gap-2 mt-2">
         <div class="tag-title">欄位標頭</div>
-        <span v-for="(field, index) in customFields" :key="index" class="inline-flex items-center bg-gray-200 px-2 py-1 ml-1 rounded">
+        <span v-for="(field, index) in customFields" :key="index" class="inline-flex items-center bg-gray-200 px-2 py-1 rounded">
           <input class="tag" v-model="customFields[index].keyName" />
           <button @click="removeField(field.keyName)" class="ml-1 text-red-500">&times;</button>
         </span>
@@ -260,30 +288,38 @@ members.value = [
     </div>
 
     <div class="space-y-2">
-      <h2 class="text-lg font-semibold">分組名稱</h2>
+      <h2 class="h2-panel">
+        分組名稱
+        <button class="ml-3" @click="addGroup">增加組別 +</button>
+      </h2>
       <div v-for="(name, index) in groupNames" :key="index" class="flex items-center space-x-2 mb-1">
-        <input v-model="groupNames[index]" placeholder="分組名稱" class="border p-1 w-40" />
+        <input v-model="groupNames[index]" placeholder="分組名稱" class="generalInput" />
         <input v-model="groupColors[index]" type="color" class="w-10 h-10" />
         <button @click="removeGroup(index)" class="ml-1 text-red-500">&times;</button>
       </div>
     </div>
 
     <div>
-      <h2 class="text-lg font-semibold">成員設定</h2>
+      <h2 class="h2-panel">
+        成員設定
+        <button class="ml-3" @click="addMember">增加人數 +</button>
+      </h2>
       <table class="w-full border text-sm">
         <thead>
           <tr>
             <th>ID</th>
             <th v-for="(item, index) in customFields" :key="index">{{ item.keyName }}</th>
             <th>隊長</th>
-            <th>刪除</th>
+            <th>
+              <span class="tag current-pointer" @click="clean">刪除</span>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="member in members" :key="member.id">
             <td>{{ member.id }}</td>
             <td v-for="(item, index) in customFields" :key="index">
-              <input class="memberInput"
+              <input class="generalInput"
                v-model="member[item.keyName]" :placeholder="item.keyName" />
             </td>
             <td>
@@ -299,10 +335,9 @@ members.value = [
     </div>
 
     <div>
-      <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" @click="assignGroups">
+      <button class="" @click="assignGroups">
         開始亂數分組
       </button>
-      <button class="ml-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" @click="clean">消除成員資料</button>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
@@ -469,20 +504,30 @@ tr:hover {
 .ml-2 {
   margin-left: 10px;
 }
+.ml-3 {
+  margin-left: 15px;
+}
 .mb-1 {
   margin-bottom: 5px;
 }
 .mb-2 {
   margin-bottom: 10px;
 }
-.mb-3 {
-  margin-bottom: 25px;
-}
 .mt-2 {
   margin-top: 10px;
 }
+
+.current-pointer {
+  cursor: pointer;
+}
+
 .text-m {
   font-size: 16px;
+}
+
+.h2-panel {
+  display: flex;
+  align-items: center;
 }
 
 .tag-title {
@@ -496,7 +541,7 @@ tr:hover {
   color: #0963c3;
   font-size: 18px;
 }
-.memberInput {
+.generalInput {
   border: 1px solid #7e7e7e;
   border-radius: 4px;
   padding: 3px;
