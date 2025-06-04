@@ -118,7 +118,7 @@ const toggleLeader = (id: number) => {
 const generateGroupMeta = () => {
   groupNames.value = Array.from({ length: groupCount.value }, (_, i) => `組別 ${i + 1}`)
   groupColors.value = Array.from({ length: groupCount.value }, () =>
-    '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')
+    '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '137')
   )
 }
 
@@ -220,7 +220,7 @@ members.value = [
   { "id": 7, "isLeader": true, "俠名": "霜烟", "性別": "女", "門派": "太白山" }, 
   { "id": 8, "isLeader": false, "俠名": "唐念", "性別": "女", "門派": "唐門" }, 
   { "id": 9, "isLeader": false, "俠名": "嗜心", "性別": "女", "門派": "玄武門" }, 
-  { "id": 10, "isLeader": false, "俠名": "逆怨", "性別": "女", "門派": "長生殿" },
+  { "id": 10, "isLeader": false, "俠名": "逆怨", "性別": "女", "門派": "萬血窟" },
   { "id": 11, "isLeader": false, "俠名": "雪飲 輕衣", "性別": "女", "門派": "雪衣樓" },
 ]
 
@@ -309,7 +309,7 @@ members.value = [
       <div
         v-for="group in groups"
         :key="group?.id || 0"
-        class="p-4 border rounded shadow"
+        class="group-item border rounded shadow"
         :style="{ backgroundColor: group?.color + '33' }"
       >
         <h3 class="text-lg font-bold mb-2" :style="{ color: group?.color }">{{ group?.name }}</h3>
@@ -456,6 +456,11 @@ tr:hover {
 
 .group-list {
   padding: 0 40px 15px;
+}
+
+.group-item {
+  padding: 1px 10px 0;
+  margin-top: 10px;
 }
 
 .ml-1 {
