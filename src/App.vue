@@ -234,7 +234,7 @@ const addTestData = () => {
         { keyIndex: 0, keyName: '姓名' }
       ]
 
-      groupNames.value = ['1車', '2車', '3車', '4車', '5車', '6車']
+      groupNames.value = ['1車', '2車', '3車', '4車', '5車', '6車', '7車', '8車']
 
       members.value = [ 
         { "id": 1, "isLeader": true, "姓名": "岳" }, 
@@ -252,13 +252,31 @@ const addTestData = () => {
         { "id": 1, "isLeader": false, "姓名": "七" }, 
         { "id": 1, "isLeader": false, "姓名": "掃" }, 
 
+        { "id": 1, "isLeader": false, "姓名": "鐙1" }, 
+        { "id": 1, "isLeader": false, "姓名": "鐙2" }, 
+        { "id": 1, "isLeader": false, "姓名": "潔3" }, 
+        { "id": 1, "isLeader": false, "姓名": "潔4" }, 
+
+        { "id": 1, "isLeader": false, "姓名": "甄5" }, 
+        { "id": 1, "isLeader": false, "姓名": "甄6" }, 
+        { "id": 1, "isLeader": false, "姓名": "甄7" }, 
+        { "id": 1, "isLeader": false, "姓名": "念8" }, 
+
+        { "id": 1, "isLeader": false, "姓名": "家9" }, 
+        { "id": 1, "isLeader": false, "姓名": "惠10" }, 
+        { "id": 1, "isLeader": false, "姓名": "昆11" }, 
+
         { "id": 1, "isLeader": true, "姓名": "鏢1" },
         { "id": 1, "isLeader": true, "姓名": "鏢2" },
         { "id": 1, "isLeader": true, "姓名": "鏢3" },
         { "id": 1, "isLeader": true, "姓名": "鏢4" },
         { "id": 1, "isLeader": true, "姓名": "鏢5" },
+        { "id": 1, "isLeader": true, "姓名": "鏢6" },
+        { "id": 1, "isLeader": true, "姓名": "鏢7" },
 
         { "id": 1, "isLeader": false, "姓名": "褓" },
+        { "id": 1, "isLeader": false, "姓名": "褓2" },
+        { "id": 1, "isLeader": false, "姓名": "褓3" },
         { "id": 1, "isLeader": false, "姓名": "助" },
       ]
       break;
@@ -303,48 +321,48 @@ watch(groupNames, val => groupCount.value = val.length)
 </script>
 
 <template>
-  <div class="p-6 max-w-5xl mx-auto space-y-6">
-    <h1 class="text-2xl font-bold">亂數分組工具</h1>
+  <div class="">
+    <h1 class="">亂數分組工具</h1>
 
-    <div class="grid gap-4 md:grid-cols-2">
+    <div class="">
       <div>
-        <label class="font-semibold">總人數：</label>
-        <input v-model.number="totalMembers" type="number" min="1" class="border p-1 w-24" @change="generateMembers" 
+        <label class="">總人數：</label>
+        <input v-model.number="totalMembers" type="number" min="1" class="generalInput" @change="generateMembers" 
           placeholder="請輸入總人數"
         />
       </div>
       <div>
-        <label class="font-semibold">分組數：</label>
-        <input v-model.number="groupCount" type="number" min="1" class="border p-1 w-24" @change="initDefaultGroup" />
+        <label class="">分組數：</label>
+        <input v-model.number="groupCount" type="number" min="1" class="generalInput" @change="initDefaultGroup" />
       </div>
       <button class="ml-1" @click="addTestData">加入測試假資料</button>
     </div>
 
-    <div class="space-y-2">
-      <h2 class="h2-panel">自訂欄位</h2>
-      <div class="flex space-x-2 items-center">
+    <div class="">
+      <h2 class="">自訂欄位</h2>
+      <div class="">
         <input v-model="newField" placeholder="新增欄位名稱" class="generalInput" />
         <button @click="addField" class="ml-2">新增欄位</button>
       </div>
       
-      <div class="flex flex-wrap gap-2 mt-2">
+      <div class="">
         <div class="tag-title">欄位標頭</div>
-        <span v-for="(field, index) in customFields" :key="index" class="inline-flex items-center bg-gray-200 px-2 py-1 rounded">
-          <input class="tag" v-model="customFields[index].keyName" />
-          <button @click="removeField(field.keyName)" class="ml-1 mr-1 text-red-500">&times;</button>
+        <span v-for="(field, index) in customFields" :key="index" class="">
+          <input class="generalInput" v-model="customFields[index].keyName" />
+          <button @click="removeField(field.keyName)" class="ml-1 mr-1 ">&times;</button>
         </span>
       </div>
     </div>
 
-    <div class="space-y-2">
+    <div class="">
       <h2 class="h2-panel">
         分組名稱
         <button class="ml-3" @click="addGroup">增加組別 +</button>
       </h2>
-      <div v-for="(name, index) in groupNames" :key="index" class="flex items-center space-x-2 mb-1">
+      <div v-for="(name, index) in groupNames" :key="index" class="labal-area">
         <input v-model="groupNames[index]" placeholder="分組名稱" class="generalInput" />
         <input v-model="groupColors[index]" type="color" class="w-10 h-10" />
-        <button @click="removeGroup(index)" class="ml-1 text-red-500">&times;</button>
+        <button @click="removeGroup(index)" class="ml-1">&times;</button>
       </div>
     </div>
 
@@ -353,7 +371,7 @@ watch(groupNames, val => groupCount.value = val.length)
         成員設定
         <button class="ml-3" @click="addMember">增加人數 +</button>
       </h2>
-      <table class="w-full border text-sm">
+      <table class="">
         <thead>
           <tr>
             <th>ID</th>
@@ -371,12 +389,13 @@ watch(groupNames, val => groupCount.value = val.length)
               <input class="generalInput"
                v-model="member[item.keyName]" :placeholder="item.keyName" />
             </td>
-            <td>
-              <span class="m-show">隊長(選填)</span>
+            <td class="td-align-items-center">
               <input type="checkbox" v-model="member.isLeader" />
+              <span class="m-show size-16 ">隊長(選填)</span>
             </td>
-            <td>
-              <button class="ml-1 text-red-500" @click="removeMember(member.id)">&times;</button>
+            <td class="td-align-items-center">
+              <button class="remove-btn" @click="removeMember(member.id)">&times;</button>
+              <span class="m-show size-16 ">刪除</span>
             </td>
           </tr>
         </tbody>
@@ -416,255 +435,247 @@ watch(groupNames, val => groupCount.value = val.length)
 
 
 <style scoped>
-:root {
-  --border-color: #ddd;
-  --bg-header: #f5f5f5;
-  --hover-color: #f0f8ff;
-  --leader-highlight: #fffbe6;
-}
-
-/* 基本排版 */
+/* layout spacing */
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
+  background-color: #f5f6f8;
+  color: #333;
+  font-size: 15px;
+  padding: 1rem;
+  line-height: 1.5;
 }
-
-h1, h2, h3 {
-  margin: 0.5em 0;
+label,
+input,
+button,
+div,
+h2 {
+  /* margin-bottom: 0.3rem; */
 }
-
-label {
-  display: inline-block;
-  margin-bottom: 4px;
+h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.25rem;
+}
+.h2-panel {
+  font-size: 1.125rem;
   font-weight: 600;
+  border-left: 4px solid #2563eb;
+  padding-left: 0.5rem;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
 }
 
-/* 表單與輸入欄位 */
-input[type="text"],
-input[type="number"],
-input[type="color"] {
-  padding: 4px 8px;
-  font-size: 14px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  /* width: 100%; */
-  box-sizing: border-box;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-input[type="number"] {
-  max-width: 100px;
-  border: 1px solid #d5d5d5;
-  margin-bottom: 5px;
-}
-
-input[type="checkbox"] {
-  transform: scale(1.1);
+input.generalInput {
+  padding: 0 .5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 150px;
+  font-size: 0.95rem;
+  margin: 0.25rem 0;
+  height: 38px;
 }
 
 button {
-  background-color: #007bff;
+  background-color: #2563eb;
   color: white;
-  padding: 8px 16px;
-  margin-top: 12px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  height: 38px;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #1e40af;
 }
 
-/* 表格樣式 */
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 1em;
+button.ml-1 {
+  margin-left: 0.5rem;
+}
+button.ml-2 {
+  margin-left: 0.75rem;
+}
+button.ml-3 {
+  margin-left: 1rem;
+}
+button.mr-1 {
+  margin-right: 0.5rem;
+}
+button.mr-2 {
+  margin-right: 0.75rem;
+}
+button.mr-3 {
+  margin-right: 1rem;
 }
 
-th,
-td {
-  border: 1px solid var(--border-color);
-  padding: 6px 10px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-th {
-  background-color: var(--bg-header);
-  font-weight: 600;
-}
-
-tr:hover {
-  background-color: var(--hover-color);
-}
-
-/* 分組結果卡片 */
-.group-card {
-  border: 1px solid var(--border-color);
-  padding: 12px;
-  border-radius: 6px;
-  margin-top: 1em;
-  background-color: #fff;
-  box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
-}
-
-.group-card h3 {
-  margin-bottom: 0.5em;
+.size-16 {
   font-size: 16px;
 }
 
-.group-card ul {
-  margin-left: 1.2em;
-  padding-left: 0;
-  list-style-type: disc;
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-.group-card li {
-  margin-bottom: 4px;
-  font-size: 14px;
+table th,
+table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  text-align: left;
 }
 
-.group-card .leader {
-  background-color: var(--leader-highlight);
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 6px;
-  font-size: 12px;
+td {
+  vertical-align: middle;
+  padding: 0.5rem;
+  height: 48px; /* 建議加上這行固定高度 */
+}
+
+table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.tag-title {
+  margin-top: 0.5rem;
   font-weight: bold;
+  margin-bottom: 0.25rem;
 }
 
-.group-list {
-  padding: 0 40px 15px;
+.tag {
+  padding: 0.35rem 0.6rem;
+  background-color: #ffffff;
+  border-radius: 5px;
+  margin-right: 0.25rem;
+  border: 1px solid #ccc;
 }
 
 .group-item {
-  padding: 1px 10px 0;
-  margin-top: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.ml-1 {
-  margin-left: 5px;
+.group-item h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
-.ml-2 {
-  margin-left: 10px;
-}
-.ml-3 {
-  margin-left: 15px;
-}
-.mb-1 {
-  margin-bottom: 5px;
-}
-.mb-2 {
-  margin-bottom: 10px;
-}
-.mt-2 {
-  margin-top: 10px;
-}
-.mr-1 {
-  margin-right: 5px;
-}
-.mr-2 {
-  margin-right: 10px;
+
+.group-list {
+  list-style-type: disc;
+  padding-left: 1.25rem;
 }
 
 .current-pointer {
   cursor: pointer;
+  color: #dc2626;
+  font-weight: bold;
 }
 
-.text-m {
-  font-size: 16px;
+input[type="color"] {
+  border: none;
+  background: transparent;
+  width: 38px;
+  height: 44px;
+  padding: 0;
+  margin-left: 0.5rem;
+  vertical-align: middle;
 }
 
-.h2-panel {
+.m-show {
+  display: block;
+}
+
+.flex {
   display: flex;
+}
+.align-items-center {
   align-items: center;
 }
 
-.tag-title {
-  margin-bottom: 0;
-  font-weight: 700;
-}
-.tag {
-  border: 1px solid #007bff;
-  border-radius: 4px;
-  padding: 3px;
-  color: #0963c3;
-  font-size: 18px;
-}
-.generalInput {
-  border: 1px solid #7e7e7e;
-  border-radius: 4px;
-  padding: 3px;
-  color: #131313;
-  font-size: 16px;
-}
-.m-show {
-  display: none;
+.remove-btn {
+  margin-right: 5px;
 }
 
-/* -------- RWD 響應式樣式 -------- */
-
-/* 格線區塊：分為兩欄、三欄 */
-.grid-2col {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.grid-3col {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-
-/* 響應式斷點 */
-@media screen and (max-width: 768px) {
-  .grid-2col,
-  .grid-3col {
-    grid-template-columns: 1fr;
+/* Responsive Design */
+@media (min-width: 768px) {
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
   }
 
-  table thead {
+  .generalInput {
+    width: auto;
+  }
+
+  button {
+    padding: 0.4rem 1rem;
+  }
+  .m-show {
+    display: none;
+  }
+  /* .td-align-items-center {
+    display: block;
+    text-align: center;
+  } */
+  .remove-btn {
+    margin-right: 0;
+  }
+}
+
+/* Responsive Table for small screens */
+@media (max-width: 767px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+    width: 100%;
+  }
+
+  thead tr {
     display: none;
   }
 
-  table tr {
-    display: block;
-    margin-bottom: 1em;
-    border: 1px solid var(--border-color);
+  tbody tr {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
     border-radius: 6px;
-    padding: 8px;
     background-color: #fff;
+    padding: 0.5rem;
   }
 
-  table td {
-    display: flex;
-    /* justify-content: space-between; */
-    justify-content: end;
-    padding: 6px 8px;
+  tbody td {
+    padding: 0.5rem;
     border: none;
-    border-bottom: 1px solid #eee;
+    position: relative;
+    display: flex;
   }
 
-  table td:last-child {
-    border-bottom: none;
-  }
-
-  table td::before {
+  tbody td::before {
     content: attr(data-label);
     font-weight: bold;
-    margin-right: 8px;
-    color: #555;
-  }
-  .m-show {
     display: block;
+    margin-bottom: 0.25rem;
+  }
+  .td-align-items-center {
+    display: flex;
+    align-items: center;
   }
 }
-
 
 </style>
