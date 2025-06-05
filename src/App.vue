@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 
 interface Member {
   id: number
@@ -182,6 +182,15 @@ const validLeaderNumber = () => {
   }
 }
 
+const scrollIntoViewBlock = (id = '') => {
+  nextTick(() => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
+  })
+}
+
 const tempGroups = ref<Group[]>()
 
 const assignGroups = () => {
@@ -219,6 +228,8 @@ const assignGroups = () => {
   if (!success) {
     alert('無法在 1000 次內完成有效分組，請確認隊長設定是否合理')
   }
+
+  scrollIntoViewBlock('source_id')
 }
 
 const queryTest = ref<string>('')
@@ -305,7 +316,11 @@ const addTestData = () => {
       ]
       break;
   }
-
+  if (groupNames.value.length) {
+    groupColors.value = groupNames.value.map((item, index) => {
+      return randomGroupColor()
+    })
+  }
 }
 
 generateMembers()
@@ -402,20 +417,21 @@ watch(groupNames, val => groupCount.value = val.length)
       </table>
     </div>
 
-    <div>
+    <div class="mt-3 mb-3">
       <button class="" @click="assignGroups">
         開始亂數分組
       </button>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+    <div class="" id="source_id">
+      <h2 v-if="groups.length">分組結果</h2>
       <div
         v-for="group in groups"
         :key="group?.id || 0"
-        class="group-item border rounded shadow"
+        class="group-item"
         :style="{ backgroundColor: group?.color + '33' }"
       >
-        <h3 class="text-lg font-bold mb-2" :style="{ color: group?.color }">{{ group?.name }}</h3>
+        <h3 class="mb-2" :style="{ color: group?.color }">{{ group?.name }}</h3>
         <ul class="group-list ml-4 text-m">
           <li v-for="member in group?.members" :key="member.id">
             {{ member[customFields[0].keyName] || '未命名' }} 
@@ -492,23 +508,29 @@ button:hover {
   background-color: #1e40af;
 }
 
-button.ml-1 {
+.ml-1 {
   margin-left: 0.5rem;
 }
-button.ml-2 {
+.ml-2 {
   margin-left: 0.75rem;
 }
-button.ml-3 {
+.ml-3 {
   margin-left: 1rem;
 }
-button.mr-1 {
+.mr-1 {
   margin-right: 0.5rem;
 }
-button.mr-2 {
+.mr-2 {
   margin-right: 0.75rem;
 }
-button.mr-3 {
+.mr-3 {
   margin-right: 1rem;
+}
+.mt-3 {
+  margin-top: 1rem;
+}
+.mb-3 {
+  margin-bottom: 1rem;
 }
 
 .size-16 {
@@ -608,7 +630,7 @@ input[type="color"] {
   margin-right: 5px;
 }
 
-/* Responsive Design */
+/* 非M版時呈現 */
 @media (min-width: 768px) {
   .grid {
     display: grid;
@@ -626,16 +648,16 @@ input[type="color"] {
   .m-show {
     display: none;
   }
-  /* .td-align-items-center {
-    display: block;
-    text-align: center;
-  } */
   .remove-btn {
     margin-right: 0;
   }
 }
 
-/* Responsive Table for small screens */
+.td-align-items-center {
+  text-align: center!important;
+}
+
+/* M版時呈現 */
 @media (max-width: 767px) {
   table,
   thead,
