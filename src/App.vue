@@ -86,7 +86,7 @@ const generateMembers = () => {
   }
 }
 
-const groupCount = ref(2)
+const groupCount = ref(1)
 const groupNames = ref<string[]>([])
 const groupColors = ref<string[]>([])
 const groups = ref<Group[]>([])
@@ -155,6 +155,16 @@ const shuffle = <T>(array: T[]): T[] => {
   return copy
 }
 
+const scrollIntoViewBlock = (id = '') => {
+  nextTick(() => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
+  })
+}
+
+// 驗證欄位
 const validateLeaderAssignment = (groups: Group[]): boolean => {
   let allHaveOneLeader = true
   for (const group of groups) {
@@ -182,18 +192,26 @@ const validLeaderNumber = () => {
   }
 }
 
-const scrollIntoViewBlock = (id = '') => {
-  nextTick(() => {
-    const el = document.getElementById(id)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
-    }
-  })
+const validMembers = () => {
+  return members.value.length && members.value.some(item => item[customFields.value[0].keyName])
+}
+const validGroups = () => {
+  return groupNames.value.length && (members.value.length >= groupNames.value.length )
 }
 
+// 執行分組功能相關
 const tempGroups = ref<Group[]>()
-
 const assignGroups = () => {
+  const isValidGroups = validGroups()
+  if (!isValidGroups) {
+    alert('成員人數必須大於組數')
+    return
+  }
+  const isValidMembers = validMembers()
+  if (!isValidMembers) {
+    alert('仍有成員必填欄位未填寫')
+    return
+  }
   const usingLeader = validLeaderNumber()
   if (!usingLeader) return
 
@@ -232,6 +250,7 @@ const assignGroups = () => {
   scrollIntoViewBlock('source_id')
 }
 
+// 測試資料相關
 const queryTest = ref<string>('')
 const getQuery = () => {
   const UrlSearch = location.search
@@ -323,6 +342,7 @@ const addTestData = () => {
   }
 }
 
+// init data
 generateMembers()
 initDefaultGroup()
 
@@ -357,7 +377,7 @@ watch(groupNames, val => groupCount.value = val.length)
       <h2 class="">自訂欄位</h2>
       <div class="">
         <input v-model="newField" placeholder="新增欄位名稱" class="generalInput" />
-        <button @click="addField" class="ml-2">新增欄位</button>
+        <button @click="addField" class="ml-2">新增欄位 +</button>
       </div>
       
       <div class="">
@@ -398,11 +418,13 @@ watch(groupNames, val => groupCount.value = val.length)
           </tr>
         </thead>
         <tbody>
-          <tr v-for="member in members" :key="member.id">
+          <tr v-for="(member, memberIndex) in members" :key="memberIndex">
             <td>{{ member.id }}</td>
             <td v-for="(item, index) in customFields" :key="index">
               <input class="generalInput"
-               v-model="member[item.keyName]" :placeholder="item.keyName" />
+               v-model="member[item.keyName]" 
+               :placeholder="`${item.keyName} ${(index === 0)? '(必填)': ''}`" 
+              />
             </td>
             <td class="td-align-items-center">
               <input type="checkbox" v-model="member.isLeader" />
@@ -448,8 +470,6 @@ watch(groupNames, val => groupCount.value = val.length)
     </div>
   </div>
 </template>
-
-
 <style scoped>
 /* layout spacing */
 body {
@@ -501,6 +521,7 @@ button {
   cursor: pointer;
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
+  padding: 0.4rem 1rem;
   height: 38px;
 }
 
@@ -630,6 +651,7 @@ input[type="color"] {
   margin-right: 5px;
 }
 
+
 /* 非M版時呈現 */
 @media (min-width: 768px) {
   .grid {
@@ -640,10 +662,6 @@ input[type="color"] {
 
   .generalInput {
     width: auto;
-  }
-
-  button {
-    padding: 0.4rem 1rem;
   }
   .m-show {
     display: none;
@@ -658,7 +676,7 @@ input[type="color"] {
 }
 
 /* M版時呈現 */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   table,
   thead,
   tbody,
@@ -666,7 +684,7 @@ input[type="color"] {
   td,
   tr {
     display: block;
-    width: 100%;
+    /* width: 100%; */
   }
 
   thead tr {
