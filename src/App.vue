@@ -201,7 +201,7 @@ const validGroups = () => {
 
 // 執行分組功能相關
 const tempGroups = ref<Group[]>()
-const assignGroups = () => {
+const startRandomGroups = () => {
   const isValidGroups = validGroups()
   if (!isValidGroups) {
     alert('成員人數必須大於組數')
@@ -381,7 +381,7 @@ watch(groupNames, val => groupCount.value = val.length)
     <section class="">
       <h2 class="h2-panel">自訂欄位</h2>
       <div class="">
-        <input v-model="newField" placeholder="新增欄位名稱" class="generalInput" />
+        <input v-model="newField" @keyup.enter="addField" placeholder="新增欄位名稱" class="generalInput" />
         <button @click="addField" class="ml-2">新增欄位 +</button>
       </div>
       
@@ -472,7 +472,7 @@ watch(groupNames, val => groupCount.value = val.length)
   </main>
   <div class="start-area">
     <div class="start-wrap">
-      <button class="start-btn" @click="assignGroups">
+      <button class="start-btn" @click="startRandomGroups">
         開始亂數分組
       </button>
     </div>
@@ -506,10 +506,11 @@ input.generalInput {
   padding: 0 .5rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  /* min-width: 300px; */
+  max-width: 300px;
   font-size: 0.95rem;
   margin: 0.25rem 0;
   height: 38px;
+  width: auto;
 }
 
 main {
@@ -710,6 +711,7 @@ input[type="color"] {
   background: #FFF;
   width: 100%;
   border: none;
+  padding: 10px 0;
 }
 .start-wrap {
   width: 768px;
@@ -720,7 +722,7 @@ input[type="color"] {
 }
 .start-btn {
   width: 96%;
-  padding: 1.1rem 1rem;
+  padding: 1.1rem 1rem .9rem;
   height: auto;
   font-size: 1.1rem;
   transform: translate(-8px, 0);
