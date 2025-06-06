@@ -356,25 +356,30 @@ watch(groupNames, val => groupCount.value = val.length)
 </script>
 
 <template>
-  <div class="">
+  <main class="">
     <h1 class="">亂數分組工具</h1>
 
-    <div class="">
-      <div>
-        <label class="">總人數：</label>
-        <input v-model.number="totalMembers" type="number" min="1" class="generalInput" @change="generateMembers" 
-          placeholder="請輸入總人數"
-        />
+    <section class="section-col mb-1">
+      <h2 class="h2-panel">分組設定</h2>
+      <div class="section-row">
+        <div class="flex-col">
+          <label class="">總人數：</label>
+          <input v-model.number="totalMembers" type="number" min="1" class="generalInput" @change="generateMembers" 
+            placeholder="請輸入總人數"
+          />
+        </div>
+        <div class="flex-col">
+          <label class="">分組數：</label>
+          <input v-model.number="groupCount" type="number" min="1" class="generalInput" @change="initDefaultGroup" />
+        </div>
       </div>
-      <div>
-        <label class="">分組數：</label>
-        <input v-model.number="groupCount" type="number" min="1" class="generalInput" @change="initDefaultGroup" />
+      <div class="btn-area">
+        <button class="test-btn" @click="addTestData">加入測試假資料</button>
       </div>
-      <button class="ml-1" @click="addTestData">加入測試假資料</button>
-    </div>
+    </section>
 
-    <div class="">
-      <h2 class="">自訂欄位</h2>
+    <section class="">
+      <h2 class="h2-panel">自訂欄位</h2>
       <div class="">
         <input v-model="newField" placeholder="新增欄位名稱" class="generalInput" />
         <button @click="addField" class="ml-2">新增欄位 +</button>
@@ -387,9 +392,9 @@ watch(groupNames, val => groupCount.value = val.length)
           <button @click="removeField(field.keyName)" class="ml-1 mr-1 ">&times;</button>
         </span>
       </div>
-    </div>
+    </section>
 
-    <div class="">
+    <section class="">
       <h2 class="h2-panel">
         分組名稱
         <button class="ml-3" @click="addGroup">增加組別 +</button>
@@ -399,9 +404,9 @@ watch(groupNames, val => groupCount.value = val.length)
         <input v-model="groupColors[index]" type="color" class="w-10 h-10" />
         <button @click="removeGroup(index)" class="ml-1">&times;</button>
       </div>
-    </div>
+    </section>
 
-    <div>
+    <section>
       <h2 class="h2-panel">
         成員設定
         <button class="ml-3" @click="addMember">增加人數 +</button>
@@ -437,15 +442,9 @@ watch(groupNames, val => groupCount.value = val.length)
           </tr>
         </tbody>
       </table>
-    </div>
+    </section>
 
-    <div class="mt-3 mb-3">
-      <button class="" @click="assignGroups">
-        開始亂數分組
-      </button>
-    </div>
-
-    <div class="" id="source_id">
+    <section class="" id="source_id">
       <h2 v-if="groups.length">分組結果</h2>
       <div
         v-for="group in groups"
@@ -467,11 +466,17 @@ watch(groupNames, val => groupCount.value = val.length)
           </li>
         </ul>
       </div>
+    </section>
+  </main>
+  <div class="start-area">
+    <div class="start-wrap">
+      <button class="start-btn" @click="assignGroups">
+        開始亂數分組
+      </button>
     </div>
   </div>
 </template>
 <style scoped>
-/* layout spacing */
 body {
   font-family: 'Helvetica Neue', sans-serif;
   background-color: #f5f6f8;
@@ -480,35 +485,57 @@ body {
   padding: 1rem;
   line-height: 1.5;
 }
-label,
-input,
-button,
-div,
-h2 {
-  /* margin-bottom: 0.3rem; */
-}
+
 h1 {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 1.25rem;
+  /* margin-bottom: 2rem; */
 }
 .h2-panel {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  border-left: 4px solid #2563eb;
-  padding-left: 0.5rem;
+  /* border-left: 4px solid #2563eb; */
+  /* padding-left: 0.5rem; */
   margin-bottom: 1rem;
-  margin-top: 2rem;
+  /* margin-top: 2rem; */
 }
 
 input.generalInput {
   padding: 0 .5rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  min-width: 150px;
+  min-width: 300px;
   font-size: 0.95rem;
   margin: 0.25rem 0;
   height: 38px;
+}
+
+main {
+  width: 768px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  margin-bottom: 4rem;
+}
+
+.section-row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+.section-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }
 
 button {
@@ -547,8 +574,20 @@ button:hover {
 .mr-3 {
   margin-right: 1rem;
 }
+.mt-1 {
+  margin-top: 0.5rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
 .mt-3 {
   margin-top: 1rem;
+}
+.mb-1 {
+  margin-bottom: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
 }
 .mb-3 {
   margin-bottom: 1rem;
@@ -633,6 +672,7 @@ input[type="color"] {
   height: 44px;
   padding: 0;
   margin-left: 0.5rem;
+  margin-bottom: 4px;
   vertical-align: middle;
 }
 
@@ -640,9 +680,6 @@ input[type="color"] {
   display: block;
 }
 
-.flex {
-  display: flex;
-}
 .align-items-center {
   align-items: center;
 }
@@ -650,10 +687,36 @@ input[type="color"] {
 .remove-btn {
   margin-right: 5px;
 }
+.test-btn {
+  width: auto;
+}
 
+.start-btn {
+  width: 96%;
+  padding: 1.1rem 1rem;
+  height: auto;
+  font-size: 1.1rem;
+  transform: translate(-8px, 0);
+}
+
+.start-area {
+  position: fixed;
+  bottom: 0;
+  background: #FFF;
+  width: 100%;
+}
+.start-wrap {
+  width: 768px;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
 
 /* 非M版時呈現 */
 @media (min-width: 768px) {
+  main {
+    width: 1024px;
+  }
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -668,6 +731,15 @@ input[type="color"] {
   }
   .remove-btn {
     margin-right: 0;
+  }
+  .start-area {
+    bottom: 0vh;
+  }
+  .start-btn {
+    width: 100%;
+  }
+  .start-wrap {
+    width: 1024px;
   }
 }
 
