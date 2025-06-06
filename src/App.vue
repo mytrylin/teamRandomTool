@@ -361,7 +361,7 @@ watch(groupNames, val => groupCount.value = val.length)
 
     <section class="section-col mb-1">
       <h2 class="h2-panel">分組設定</h2>
-      <div class="section-row">
+      <div class="section-set-body">
         <div class="flex-col">
           <label class="">總人數：</label>
           <input v-model.number="totalMembers" type="number" min="1" class="generalInput" @change="generateMembers" 
@@ -387,10 +387,12 @@ watch(groupNames, val => groupCount.value = val.length)
       
       <div class="">
         <div class="tag-title">欄位標頭</div>
-        <span v-for="(field, index) in customFields" :key="index" class="">
-          <input class="generalInput" v-model="customFields[index].keyName" />
-          <button @click="removeField(field.keyName)" class="ml-1 mr-1 ">&times;</button>
-        </span>
+        <div class="flex-row flex-wrap">
+          <span v-for="(field, index) in customFields" :key="index" class="">
+            <input class="generalInput" v-model="customFields[index].keyName" />
+            <button @click="removeField(field.keyName)" class="ml-1 mr-1 ">&times;</button>
+          </span>
+        </div>
       </div>
     </section>
 
@@ -411,13 +413,13 @@ watch(groupNames, val => groupCount.value = val.length)
         成員設定
         <button class="ml-3" @click="addMember">增加人數 +</button>
       </h2>
-      <table class="">
+      <table class="table">
         <thead>
           <tr>
             <th>ID</th>
             <th v-for="(item, index) in customFields" :key="index">{{ item.keyName }}</th>
-            <th>隊長</th>
-            <th>
+            <th class="td-align-items-center">隊長</th>
+            <th class="td-align-items-center">
               <span class="tag current-pointer" @click="clean">刪除</span>
             </th>
           </tr>
@@ -504,7 +506,7 @@ input.generalInput {
   padding: 0 .5rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  min-width: 300px;
+  /* min-width: 300px; */
   font-size: 0.95rem;
   margin: 0.25rem 0;
   height: 38px;
@@ -515,18 +517,20 @@ main {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  margin-bottom: 4rem;
+  margin-bottom: 5rem;
+  
+}
+section {
+  padding: 1rem;
 }
 
-.section-row {
+.section-row, .section-col {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
 }
 .section-col {
-  display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .flex-row {
@@ -537,6 +541,9 @@ main {
   display: flex;
   flex-direction: column;
 }
+.flex-wrap {
+  flex-wrap: wrap;
+}
 
 button {
   background-color: #2563eb;
@@ -546,10 +553,10 @@ button {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
+  /* margin-top: 0.25rem; */
+  /* margin-bottom: 0.25rem; */
   padding: 0.4rem 1rem;
-  height: 38px;
+  height: 40px;
 }
 
 button:hover {
@@ -602,7 +609,7 @@ button:hover {
   border-collapse: collapse;
   margin-top: 1rem;
   background: white;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   border-radius: 6px;
   overflow: hidden;
 }
@@ -613,6 +620,7 @@ table td {
   padding: 0.5rem;
   font-size: 0.9rem;
   text-align: left;
+  min-width: 60px;
 }
 
 td {
@@ -636,7 +644,7 @@ table th {
   padding: 0.35rem 0.6rem;
   background-color: #ffffff;
   border-radius: 5px;
-  margin-right: 0.25rem;
+  /* margin-right: 0.25rem; */
   border: 1px solid #ccc;
 }
 
@@ -665,6 +673,11 @@ table th {
   font-weight: bold;
 }
 
+input[type="checkbox"] {
+  width: 25px;
+  height: 25px;
+}
+
 input[type="color"] {
   border: none;
   background: transparent;
@@ -691,6 +704,20 @@ input[type="color"] {
   width: auto;
 }
 
+.start-area {
+  position: fixed;
+  bottom: 0;
+  background: #FFF;
+  width: 100%;
+  border: none;
+}
+.start-wrap {
+  width: 768px;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  border: none;
+}
 .start-btn {
   width: 96%;
   padding: 1.1rem 1rem;
@@ -699,24 +726,27 @@ input[type="color"] {
   transform: translate(-8px, 0);
 }
 
-.start-area {
-  position: fixed;
-  bottom: 0;
-  background: #FFF;
-  width: 100%;
-}
-.start-wrap {
-  width: 768px;
+.section-set-body {
   display: flex;
-  justify-content: center;
-  margin: 0 auto;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 /* 非M版時呈現 */
 @media (min-width: 768px) {
   main {
-    width: 1024px;
+    width: 1400px;
   }
+  section {
+    padding: 0;
+  }
+  .section-set-body {
+    flex-direction: row;
+  }
+  .table {
+    width: 1400px;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -739,7 +769,7 @@ input[type="color"] {
     width: 100%;
   }
   .start-wrap {
-    width: 1024px;
+    width: 1400px;
   }
 }
 
