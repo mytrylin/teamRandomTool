@@ -182,9 +182,16 @@ const validLeaderNumber = () => {
   if (leaderCount.value === 0) return true
   if (usingLeader && leaderCount.value !== groupCount.value) {
     if (leaderCount.value > groupCount.value ) {
-      alert(`目前已勾選 ${leaderCount.value} 位隊長，已超過最分組上限，請移除 ${leaderCount.value - groupCount.value} 位隊長後再進行分組`)
+      alert(`
+      目前已勾選 ${leaderCount.value} 位隊長，已超過最分組上限，
+      請移除 ${leaderCount.value - groupCount.value} 位隊長後再進行分組。
+      或不勾選隊長進行無隊長分組。
+      `)
     } else {
-      alert(`目前已勾選 ${leaderCount.value} 位隊長，請指定 ${groupCount.value} 位隊長後再進行分組`)
+      alert(`
+      目前已勾選 ${leaderCount.value} 位隊長，請指定 ${groupCount.value} 位隊長後再進行分組。
+      或不勾選隊長進行無隊長分組。
+      `)
     }
     return false
   } else {
